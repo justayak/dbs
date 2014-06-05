@@ -1,61 +1,67 @@
---- bundeliga-DB by Memel, Timo, Julian
+﻿--- bundeliga-DB by Memel, Timo, Julian
+-- ENUMS als Integer? (Frage an Julius)
+DROP TABLE IF EXISTS Country CASCADE;
 CREATE TABLE Country (
-	name varchar(80) PRIMARY KEY
+	name VARCHAR(80) CONSTRAINT country_pk PRIMARY KEY 
 );
 
+DROP TABLE IF EXISTS Division CASCADE;
 CREATE TABLE Division (
-	id integer PRIMARY KEY,
-	name varchar(80)
+	name VARCHAR(80) CONSTRAINT division_pk PRIMARY KEY
 );
 
+DROP TABLE IF EXISTS Season CASCADE;
 CREATE TABLE Season (
-	id integer PRIMARY KEY,
-	name varchar(80),
-	start date,
-	end date
+	name INTEGER CONSTRAINT season_pk PRIMARY KEY
 );
 
+DROP TABLE IF EXISTS Team CASCADE;
 CREATE TABLE Team (
-	name varchar(80) PRIMARY KEY,
-	stadium varchar(80) ,
-	divisionID integer REFERENCES Division(id)
+	name VARCHAR(80) CONSTRAINT team_pk PRIMARY KEY,
+	stadium VARCHAR(80) NOT NULL,
+	division VARCHAR(80) REFERENCES Division(name)
 );
 
+DROP TABLE IF EXISTS Player CASCADE;
 CREATE TABLE Player (
-	playerId integer PRIMARY KEY,
-	name varchar(80),
-	homeCountry varchar(80) REFERENCES Country(name)
-	team_name varchar (80) REFERENCES Team(name)
+	name VARCHAR(80) NOT NULL,
+	surname VARCHAR(80) NOT NULL,
+	id INTEGER CONSTRAINT player_pk PRIMARY KEY,
+	country VARCHAR(80) REFERENCES Country(name)
 );
 
-CREATE TABLE Match (
-	seasonID integer REFERENCES Season(id),
-date date,
-home_name varchar(80) REFERENCES Team(name),
-guest_name varchar(80) REFERENCES Team(name),
-PRIMARY KEY (seasonID, date, home_name, guest_name)	
-);
-
-CREATE TABLE EventType (
-	name varchar(80)
-);
-
-CREATE TABLE Event (
-	match_date date REFERENCES Match(date),
-	home_name varchar(80) REFERENCES Team(name),
-	type varchar(80) REFERENCES EventType(name),
-	playerId integer REFERENCES Player(playerId),
-	minute integer,
-	PRIMARY KEY (match_date, home_name, type, minute, player_id)
-);
-
+DROP TABLE IF EXISTS PlayerToTeam CASCADE;
 CREATE TABLE PlayerToTeam (
-	playerId integer REFERENCES Player(playerId),
-	team_name varchar(80) REFERENCES Team(name),
-	number integer,
-	PRIMARY KEY (playerId, team_name, number)
+	playerId INTEGER REFERENCES Player(id),
+	teamName VARCHAR(80) REFERENCES Team(name),
+	nbr INTEGER,
+	CONSTRAINT playerToTeam_pk PRIMARY KEY(teamName, nbr)
 );
 
---P.S:
---tables that I created: Division, County, Season, EventType
+DROP TABLE IF EXISTS EventType CASCADE;
+CREATE TABLE EventType(
+	name VARCHAR(80) CONSTRAINT eventtype_pk PRIMARY KEY
+);
 
+DROP TABLE IF EXISTS BLMatch CASCADE;
+CREATE TABLE BLMatch(
+	seasonName INTEGER REFERENCES Season(name),
+	mdate DATE,
+	startTime TIME NOT NULL,
+	home_team VARCHAR(80) REFERENCES Team(name),
+	guest_team VARCHAR(80) NOT NULL REFERENCES Team(name),
+	CONSTRAINT match_pk PRIMARY KEY(home_team, mdate)
+);
+
+DROP TABLE IF EXISTS Event CASCADE;
+CREATE TABLE Event (
+	eventType VARCHAR(80) REFERENCES EventType(name),
+	eventMinute INTEGER,
+	match_date DATE,
+	match_home VARCHAR(80),
+	playerId INTEGER REFERENCES Player(id),
+	CONSTRAINT event_minute CHECK (eventMinute >= 0 AND eventMinute < 121),
+	CONSTRAINT event_pk PRIMARY KEY (match_date, match_home, eventType, eventMinute, playerId)
+	,CONSTRAINT match_fk FOREIGN KEY (match_date, match_home) REFERENCES BLMatch (mdate, home_team)
+);
+-- 
