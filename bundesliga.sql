@@ -31,9 +31,8 @@ DROP TABLE IF EXISTS PlayerToTeam CASCADE;
 CREATE TABLE PlayerToTeam (
 	playerId INTEGER REFERENCES Player(id),
 	teamId INTEGER REFERENCES Team(id),
-	seasonId INTEGER REFERENCES Season(name) NOT NULL,
 	nbr INTEGER,
-	CONSTRAINT playerToTeam_pk PRIMARY KEY(teamId, nbr)
+	CONSTRAINT playerToTeam_pk PRIMARY KEY(playerId,teamId,nbr)
 );
 
 DROP TABLE IF EXISTS EventType CASCADE;
