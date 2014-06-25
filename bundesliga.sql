@@ -1,6 +1,4 @@
-﻿--- bundeliga-DB by Memel, Timo, Julian
--- ENUMS als Integer? (Frage an Julius)
-DROP TABLE IF EXISTS Country CASCADE;
+﻿DROP TABLE IF EXISTS Country CASCADE;
 CREATE TABLE Country (
 	name VARCHAR(80) CONSTRAINT country_pk PRIMARY KEY 
 );
