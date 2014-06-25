@@ -34,6 +34,7 @@ DROP TABLE IF EXISTS PlayerToTeam CASCADE;
 CREATE TABLE PlayerToTeam (
 	playerId INTEGER REFERENCES Player(id),
 	teamName VARCHAR(80) REFERENCES Team(name),
+	seasonId INTEGER REFERENCES Season(name) NOT NULL,
 	nbr INTEGER,
 	CONSTRAINT playerToTeam_pk PRIMARY KEY(teamName, nbr)
 );
