@@ -15,15 +15,14 @@ CREATE TABLE Season (
 
 DROP TABLE IF EXISTS Team CASCADE;
 CREATE TABLE Team (
-	name VARCHAR(80) CONSTRAINT team_pk PRIMARY KEY,
-	stadium VARCHAR(80) NOT NULL,
+    id INTEGER CONSTRAINT team_pk PRIMARY KEY,
+	name VARCHAR(80),
 	division INTEGER REFERENCES Division(name)
 );
 
 DROP TABLE IF EXISTS Player CASCADE;
 CREATE TABLE Player (
 	name VARCHAR(80) NOT NULL,
-	surname VARCHAR(80) NOT NULL,
 	id INTEGER CONSTRAINT player_pk PRIMARY KEY,
 	country VARCHAR(80) REFERENCES Country(name)
 );
@@ -31,15 +30,15 @@ CREATE TABLE Player (
 DROP TABLE IF EXISTS PlayerToTeam CASCADE;
 CREATE TABLE PlayerToTeam (
 	playerId INTEGER REFERENCES Player(id),
-	teamName VARCHAR(80) REFERENCES Team(name),
+	teamId INTEGER REFERENCES Team(id),
 	seasonId INTEGER REFERENCES Season(name) NOT NULL,
 	nbr INTEGER,
-	CONSTRAINT playerToTeam_pk PRIMARY KEY(teamName, nbr)
+	CONSTRAINT playerToTeam_pk PRIMARY KEY(teamId, nbr)
 );
 
 DROP TABLE IF EXISTS EventType CASCADE;
 CREATE TABLE EventType(
-	name VARCHAR(80) CONSTRAINT eventtype_pk PRIMARY KEY
+	name INTEGER CONSTRAINT eventtype_pk PRIMARY KEY
 );
 
 DROP TABLE IF EXISTS BLMatch CASCADE;
@@ -47,20 +46,24 @@ CREATE TABLE BLMatch(
 	seasonName INTEGER REFERENCES Season(name),
 	mdate DATE,
 	startTime TIME NOT NULL,
-	home_team VARCHAR(80) REFERENCES Team(name),
-	guest_team VARCHAR(80) NOT NULL REFERENCES Team(name),
+	home_team INTEGER REFERENCES Team(id),
+	guest_team INTEGER NOT NULL REFERENCES Team(id),
 	CONSTRAINT match_pk PRIMARY KEY(home_team, mdate)
 );
 
 DROP TABLE IF EXISTS Event CASCADE;
 CREATE TABLE Event (
-	eventType VARCHAR(80) REFERENCES EventType(name),
+	eventType INTEGER REFERENCES EventType(name),
 	eventMinute INTEGER,
 	match_date DATE,
-	match_home VARCHAR(80),
+	match_home INTEGER,
 	playerId INTEGER REFERENCES Player(id),
 	CONSTRAINT event_minute CHECK (eventMinute >= 0 AND eventMinute < 121),
 	CONSTRAINT event_pk PRIMARY KEY (match_date, match_home, eventType, eventMinute, playerId)
 	,CONSTRAINT match_fk FOREIGN KEY (match_date, match_home) REFERENCES BLMatch (mdate, home_team)
 );
 -- 
+--- DIVISION
+INSERT INTO division VALUES (1);
+INSERT INTO division VALUES (2);
+INSERT INTO division VALUES (3);
