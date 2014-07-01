@@ -4920,3 +4920,7 @@ INSERT INTO blmatch VALUES(38,'2014-05-10','13:30:00',49,52,3,0);
 INSERT INTO blmatch VALUES(38,'2014-05-10','13:30:00',53,48,0,0);
 INSERT INTO blmatch VALUES(38,'2014-05-10','13:30:00',47,40,0,0);
 INSERT INTO blmatch VALUES(38,'2014-05-10','13:30:00',37,51,2,0);
+
+DROP VIEW IF EXISTS v_matches;
+CREATE OR REPLACE VIEW v_matches AS SELECT home_team AS team_id, guest_team as cteam, goalshome as goals, goalsguest as cgoals, mdate FROM blmatch WHERE home_team = 1 UNION SELECT guest_team AS team_id, home_team as cteam, goalsguest as goals, goalshome as cgoals, mdate FROM blmatch WHERE guest_team = 1 ORDER BY mdate DESC; --FETCH FIRST 5 ROWS ONLY;
+SELECT * FROM v_matches;
