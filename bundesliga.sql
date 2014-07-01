@@ -9884,7 +9884,7 @@ BEGIN
       FROM   pg_catalog.pg_user
       WHERE  usename = 'metiju') THEN
 
-      CREATE USER metiju WITH PASSWORD 'huso';
+      CREATE ROLE metiju LOGIN PASSWORD 'huso';
    END IF;
 END
 $body$
